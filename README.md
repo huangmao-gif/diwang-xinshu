@@ -111,6 +111,29 @@ Jev 只回答三类结构化问题（noul 是非 / choice 多选一 / score 2–
 2. 输入格式：`局：……。我要什么：……。约束：……。`
 3. 输出即判决令，不需要额外追问。
 
+## 可运行实现：`app/`（朕知道了 · 四帝判官）
+
+把规则书套进 Jev 式判断架子的 Web 服务。模型只回答 11 道结构化判断题（choice 选一 / score 打分 / noul 是否，各带把握值），类型校验、分流和限流都写在代码里，不靠模型自觉。
+
+| 文件 | 作用 |
+|---|---|
+| `app/server.js` | Node.js / Express：调 DeepSeek（JSON 模式）→ 选项白名单与数值范围校验，不合格带错误信息重试一次 → 按把握分流 → 按 IP 每日限流 |
+| `app/prompt/wrapper.xml` | 外层架子：11 道题的选项、打分标尺、输出格式 |
+| `app/prompt/rulebook.md` | 规则书 v0.3 全文（服务当前加载的版本） |
+| `app/public/index.html` | 判决卡页面 |
+| `app/test/` | 样例与模拟输出；`npm test` 跑 11 项校验与分流检查 |
+
+分流规则：急性危机把握 ≥ 0.3 → 热线卡不判；需专业资质或手段违法 → 不判；不可逆把握 ≥ 0.5 → 只出事实清单；局型或主裁把握 < 0.5 → 只出补问；其余出判决卡。
+
+```bash
+cd app && npm install --omit=dev
+export DEEPSEEK_API_KEY=你的key      # 没有 key 时改跑 npm run mock（模拟输出）
+PORT=3100 node server.js
+npm test
+```
+
+部署（pm2 + Nginx 反代）见 `app/README.md`。
+
 ## 作者
 
 麻嘉诺（2028 届 · 上海杉达学院）· 该项目与 [命理鉴心](https://minglijinxin.com)、[MingLi-Bench](https://github.com/huangmao-gif/mingli-bench) 同属一个个人 AI 工程实践体系。

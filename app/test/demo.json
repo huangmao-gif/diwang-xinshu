@@ -1,0 +1,25 @@
+{
+  "judgments": {
+    "局型": {"type": "choice", "choice": "财政追投止损", "probabilities": {"财政追投止损": 0.62, "舆论面子借刀": 0.28, "多方博弈表态": 0.10}, "confidence": 0.8},
+    "边界": {"type": "choice", "choice": "无", "probabilities": {"无": 0.97, "需专业资质": 0.02, "违法动作": 0.01}, "confidence": 0.92},
+    "主裁": {"type": "choice", "choice": "雍正", "probabilities": {"雍正": 0.40, "康熙": 0.15, "乾隆": 0.30, "嘉靖": 0.15}, "confidence": 0.78},
+    "参数": {"type": "choice", "choice": "无", "probabilities": {"无": 0.85, "亲密关系": 0.10, "强弱不对等": 0.05}, "confidence": 0.8},
+    "不可逆": {"type": "noul", "noul": 0.22, "confidence": 0.8},
+    "度": {"type": "score", "score": 64, "confidence": 0.82},
+    "势": {"type": "score", "score": 58, "confidence": 0.7},
+    "时": {"type": "score", "score": 72, "confidence": 0.76},
+    "术": {"type": "score", "score": 66, "confidence": 0.72},
+    "动手": {"type": "noul", "noul": 0.78, "confidence": 0.77},
+    "死法卡": {"type": "choice", "choice": "时间通胀卡", "probabilities": {"时间通胀卡": 0.55, "面子通胀卡": 0.25, "未命中": 0.20}, "confidence": 0.66}
+  },
+  "verdict": {
+    "令": "本周日前私聊他，给两个日期让他选一个付清1800；逾期就把水电分摊表发进合租群",
+    "假设": ["他手头能一次付清1800", "另外两人都按时交过水电"],
+    "验": ["11月15日前他回复选定日期", "选定那天到账1800元", "12月起他的水电按时自付"],
+    "价": "合租关系降温一档",
+    "锚": "雍正主裁·乾隆辅裁",
+    "事实清单": null,
+    "need": null
+  },
+  "state": "合租室友欠我三个月水电费 1800 元，催过两次都说下个月给。四个人的合租群里另外两人不知道这事。我想把钱要回来，又不想以后住得别扭。"
+}

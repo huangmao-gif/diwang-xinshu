@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>朕知道了 · 四帝判官</title>
+<meta name="description" content="把一件拿不定主意的事呈上来，雍正、康熙、乾隆、嘉靖四种决策方式会审，给你一张判决卡。">
+<style>
+:root{
+  --paper:#f4ecdc; --paper-2:#efe4cf; --card:#fbf6ea; --ink:#1d1a16; --ink-2:#5b5349; --ink-3:#8a8073;
+  --red:#b3261e; --red-soft:#e9c9c1; --gold:#9a7b3c; --line:#d9ccb3; --ok:#3f6b4a;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","Source Han Serif SC","SimSun",serif;
+  --sans:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper);color:var(--ink)}
+body{font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh;
+  background-image:radial-gradient(circle at 20% 0%,#f8f1e3 0,transparent 60%),radial-gradient(circle at 100% 100%,var(--paper-2) 0,transparent 55%)}
+.wrap{max-width:560px;margin:0 auto;padding:20px 16px 40px}
+header{text-align:center;padding:14px 0 18px}
+h1{font-family:var(--serif);font-size:34px;letter-spacing:6px;font-weight:700}
+h1 span{color:var(--red)}
+.sub{color:var(--ink-2);font-size:13px;margin-top:4px;letter-spacing:1px}
+.ask{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px}
+textarea{width:100%;min-height:112px;border:1px solid var(--line);border-radius:4px;background:#fffdf7;padding:10px 12px;
+  font:inherit;color:var(--ink);resize:vertical;outline:none}
+textarea:focus{border-color:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink-2);border-radius:999px;padding:3px 10px;font-size:12.5px;cursor:pointer}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.count{font-size:12px;color:var(--ink-3)}
+button.go{background:var(--red);color:#fff8ef;border:none;border-radius:4px;padding:10px 22px;font-family:var(--serif);font-size:17px;letter-spacing:3px;cursor:pointer}
+button.go:disabled{opacity:.55;cursor:default}
+.err{color:var(--red);font-size:13px;margin-top:8px;min-height:1em}
+#out{margin-top:18px}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px 16px 14px;
+  box-shadow:0 1px 0 #fff inset,0 8px 24px -16px rgba(60,40,10,.35)}
+.ribbon{position:absolute;top:10px;right:-1px;background:var(--ink);color:var(--paper);font-size:11px;padding:1px 8px;letter-spacing:2px}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tag{font-size:12px;border:1px solid var(--line);border-radius:3px;padding:0 6px;color:var(--ink-2)}
+.tag.warn{border-color:var(--red-soft);color:var(--red)}
+.head{display:flex;align-items:center;gap:14px}
+.seal{width:68px;height:68px;flex:none;border:3px solid var(--red);color:var(--red);border-radius:4px;display:grid;place-items:center;
+  font-family:var(--serif);font-weight:700;font-size:22px;line-height:1.05;writing-mode:vertical-rl;letter-spacing:2px;transform:rotate(-4deg);
+  background:rgba(179,38,30,.04)}
+.seal small{font-size:10px;font-weight:400;letter-spacing:0}
+.act{flex:1}
+.act .big{font-family:var(--serif);font-size:44px;font-weight:700;line-height:1}
+.act .big.move{color:var(--red)}
+.act .pct{color:var(--ink-2);font-size:13px}
+.ling{margin:16px 0 4px;padding:12px 12px 12px 14px;border-left:3px solid var(--red);background:rgba(179,38,30,.05)}
+.ling .lab{font-size:12px;color:var(--red);letter-spacing:2px}
+.ling p{font-family:var(--serif);font-size:19px;line-height:1.55;color:var(--red);font-weight:600}
+h3{font-family:var(--serif);font-size:15px;letter-spacing:2px;margin:16px 0 8px;color:var(--ink);display:flex;align-items:center;gap:8px}
+h3::after{content:"";flex:1;height:1px;background:var(--line)}
+.bars .b{display:grid;grid-template-columns:44px 1fr 40px;align-items:center;gap:8px;margin:5px 0;font-size:13px}
+.track{height:8px;background:var(--paper-2);border-radius:4px;overflow:hidden}
+.fill{height:100%;background:var(--ink-3);border-radius:4px}
+.b.main .fill{background:var(--red)} .b.main{font-weight:700}
+.b .v{text-align:right;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cell{border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:#fffdf7}
+.cell .t{display:flex;align-items:baseline;justify-content:space-between}
+.cell .ch{font-family:var(--serif);font-size:20px;font-weight:700}
+.cell .ch small{font-size:12px;color:var(--ink-3);font-weight:400;margin-left:4px}
+.cell .n{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.cell .d{font-size:12px;color:var(--ink-3);margin:2px 0 6px}
+.stamp{margin:16px 0 4px;border:2px dashed var(--red);border-radius:6px;padding:10px 12px;transform:rotate(-1.2deg);background:rgba(179,38,30,.03)}
+.stamp b{font-family:var(--serif);color:var(--red);font-size:17px}
+.stamp p{font-size:13px;color:var(--ink-2)}
+ul.plain{list-style:none}
+ul.plain li{position:relative;padding-left:16px;margin:4px 0;font-size:14px}
+ul.plain li::before{content:"·";position:absolute;left:4px;color:var(--red);font-weight:700}
+.foot{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:14px;padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+.foot b{color:var(--ink)}
+.facts li{display:flex;gap:8px;align-items:flex-start;padding-left:0}
+.facts li::before{display:none}
+.k{flex:none;font-size:12px;border-radius:3px;padding:0 5px;margin-top:2px;border:1px solid var(--line)}
+.k.事实{color:var(--ok);border-color:#b9cfbd}.k.推测{color:var(--red);border-color:var(--red-soft)}.k.判断{color:var(--gold);border-color:#e0cfa8}
+.note{margin-top:10px;font-size:13px;color:var(--ink-2)}
+.title2{font-family:var(--serif);font-size:24px;font-weight:700;margin-bottom:6px}
+.tel{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.tel a{display:block;text-align:center;border:1px solid var(--ink);border-radius:4px;padding:9px;color:var(--ink);text-decoration:none;font-weight:600}
+.loading{text-align:center;padding:28px 0;font-family:var(--serif);color:var(--ink-2);letter-spacing:3px}
+.loading i{display:inline-block;animation:blink 1.2s infinite}
+.loading i:nth-child(2){animation-delay:.2s}.loading i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+footer{margin-top:22px;text-align:center;font-size:12px;color:var(--ink-3);line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>朕<span>知道了</span></h1>
+    <div class="sub">四帝判官 · 雍正 康熙 乾隆 嘉靖 会审你的局</div>
+  </header>
+
+  <section class="ask">
+    <textarea id="q" maxlength="800" placeholder="把局呈上来：对手是谁、你要什么、能付出的上限。&#10;例：合租室友欠我三个月水电费 1800 元，催过两次都说下个月给……"></textarea>
+    <div class="chips" id="chips"></div>
+    <div class="row">
+      <span class="count" id="cnt">0 / 800</span>
+      <button class="go" id="go">呈请御览</button>
+    </div>
+    <div class="err" id="err"></div>
+  </section>
+
+  <div id="out"></div>
+
+  <footer>四位皇帝是从史料抽象出的决策方式，不是本人言论，也不写台词。<br>判决由 AI 生成，把握是模型自报的，仅供参考；医疗、法律、财务问题请找专业人士。</footer>
+</div>
+
+<script>
+const PRESETS = [
+  ['室友欠水电', '合租室友欠我三个月水电费 1800 元，催过两次都说下个月给。四个人的合租群里另外两人不知道这事。我想把钱要回来，又不想以后住得别扭。'],
+  ['组长抢功', '我和同事一起做的方案，组长在部门会上说成是他牵头做的。下个月评优，名额只有一个。我要名分，但不想和组长撕破脸，组长和部门经理关系很好。'],
+  ['合伙人想退股', '我和朋友合伙开了家奶茶店，各出 10 万。现在他想退股拿回 10 万，店里账上只有 4 万，生意刚回本。我要店继续开，最多能再拿出 3 万。'],
+];
+const MACHINE = {雍正:'财政机器',康熙:'大局机器',乾隆:'叙事机器',嘉靖:'博弈机器'};
+const DIMS = [['度','账','这笔账划不划算'],['势','位','你相对对手的位置'],['时','机','现在动手的时机'],['术','手','手段在不在你手里']];
+const DEATH = {
+  忠奸卡:'把「他忠不忠」当变量。忠诚不可计量，换成违约成本。',
+  面子通胀卡:'把面子当无限资产。一次大场合的评价权只能用一次。',
+  弃刀后遗症卡:'以为弃刀就干净了。刀知道你手上有证据，弃刀＝多一个仇人。',
+  彻底解决卡:'追求一次性解决。凡「彻底」必留死仇，且死仇不在你的时间表上。',
+  明君卡:'想当讲道理的那方。讲道理在多方局里＝赠送解释权。',
+  代理幻觉卡:'以为代理人会为你的利益行动。他只为自己的退出成本行动。',
+  时间通胀卡:'把「以后」当资源。所有拖延都在计价，等待成本必须写进账。',
+  单点依赖卡:'局里只有一个支点，且这个支点不在你手里。',
+  身份错位卡:'把自己的位置当成对方以为的位置。位置差一档，手段全错。',
+  冷度自噬卡:'为了冷而冷，把可用的信息源冻跑了。'
+};
+
+const $ = s => document.querySelector(s);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const pct = x => Math.round(x * 100) + '%';
+
+PRESETS.forEach(([name, text]) => {
+  const b = el('button', 'chip', '例 · ' + name);
+  b.onclick = () => { $('#q').value = text; upd(); $('#q').focus(); };
+  $('#chips').appendChild(b);
+});
+function upd(){ $('#cnt').textContent = $('#q').value.length + ' / 800'; }
+$('#q').addEventListener('input', upd);
+
+function bar(name, value, main, right) {
+  const r = el('div', 'b' + (main ? ' main' : ''));
+  r.appendChild(el('span', '', name));
+  const t = el('div', 'track'); const f = el('div', 'fill'); f.style.width = Math.round(value * 100) + '%'; t.appendChild(f);
+  r.appendChild(t); r.appendChild(el('span', 'v', right));
+  return r;
+}
+
+function render(d) {
+  const out = $('#out'); out.innerHTML = '';
+  const card = el('div', 'card');
+  if (d.demo) card.appendChild(el('div', 'ribbon', '样例'));
+  const J = d.judgments || {}, V = d.verdict || {};
+
+  if (d.mode === 'crisis') {
+    card.appendChild(el('div', 'title2', '这一局，四台机器不判'));
+    card.appendChild(el('p', '', '你说的情况需要现在就有人在你身边。分析会推迟真正的处置，先打电话。'));
+    const tel = el('div', 'tel');
+    [['tel:12356','心理援助热线 12356'],['tel:110','有人身危险 · 110'],['tel:120','需要急救 · 120']].forEach(([h,t])=>{const a=el('a','',t);a.href=h;tel.appendChild(a);});
+    card.appendChild(tel); out.appendChild(card); return;
+  }
+  if (d.mode === 'decline') {
+    card.appendChild(el('div', 'title2', '此局不判'));
+    card.appendChild(el('p', '', d.reason)); out.appendChild(card); return;
+  }
+
+  const meta = el('div', 'meta');
+  if (J['局型']) meta.appendChild(el('span', 'tag', J['局型'].choice));
+  if (J['参数'] && J['参数'].choice !== '无') meta.appendChild(el('span', 'tag warn', '参数已替换 · ' + J['参数'].choice));
+  card.appendChild(meta);
+
+  if (d.mode === 'facts') {
+    card.appendChild(el('div', 'title2', '先核事实，再判'));
+    card.appendChild(el('p', '', '这一局要做的是不可逆动作。前提一错，判得越硬，损失越大。'));
+    card.appendChild(el('h3', '', '事实清单'));
+    const ul = el('ul', 'plain facts');
+    (d.facts || []).forEach(f => {
+      const [k, ...rest] = f.split('｜'); const li = el('li');
+      const kk = ['事实','推测','判断'].includes(k) ? k : '推测';
+      li.appendChild(el('span', 'k ' + kk, kk)); li.appendChild(el('span', '', rest.length ? rest.join('｜') : f)); ul.appendChild(li);
+    });
+    card.appendChild(ul);
+    card.appendChild(el('p', 'note', d.note));
+    if (V.need) card.appendChild(el('p', 'note', '先补这一条：' + V.need));
+    out.appendChild(card); return;
+  }
+  if (d.mode === 'ask') {
+    card.appendChild(el('div', 'title2', '信息不够，补一句再判'));
+    card.appendChild(el('p', '', d.need));
+    out.appendChild(card); $('#q').focus(); return;
+  }
+
+  // 判决卡
+  const head = el('div', 'head');
+  const main = J['主裁'].choice;
+  const seal = el('div', 'seal'); seal.appendChild(document.createTextNode(main)); seal.appendChild(el('small', '', '主裁'));
+  head.appendChild(seal);
+  const act = el('div', 'act');
+  act.appendChild(el('div', 'big' + (d.act === '动' ? ' move' : ''), d.act === '动' ? '动' : '等'));
+  act.appendChild(el('div', 'pct', (d.act === '动' ? '现在动手的把握 ' : '先等的把握 ') + pct(d.act === '动' ? J['动手'].noul : 1 - J['动手'].noul) + ' · ' + MACHINE[main]));
+  head.appendChild(act); card.appendChild(head);
+
+  const ling = el('div', 'ling'); ling.appendChild(el('div', 'lab', '朱 批')); ling.appendChild(el('p', '', V['令'])); card.appendChild(ling);
+
+  card.appendChild(el('h3', '', '四帝话语权'));
+  const bars = el('div', 'bars');
+  ['雍正','康熙','乾隆','嘉靖'].forEach(n => { const p = J['主裁'].probabilities[n] || 0; bars.appendChild(bar(n, p, n === main, pct(p))); });
+  card.appendChild(bars);
+
+  card.appendChild(el('h3', '', '度 势 时 术'));
+  const grid = el('div', 'grid');
+  DIMS.forEach(([k, sub, desc]) => {
+    const j = J[k]; const c = el('div', 'cell');
+    const t = el('div', 't'); const ch = el('span', 'ch', k); ch.appendChild(el('small', '', sub)); t.appendChild(ch); t.appendChild(el('span', 'n', j.score)); c.appendChild(t);
+    c.appendChild(el('div', 'd', desc + (j.tag !== '稳' ? ' · 把握' + j.tag : '')));
+    const tr = el('div', 'track'); const f = el('div', 'fill'); f.style.width = j.score + '%'; f.style.background = j.score >= 60 ? 'var(--ink)' : j.score >= 40 ? 'var(--gold)' : 'var(--red)'; tr.appendChild(f); c.appendChild(tr);
+    grid.appendChild(c);
+  });
+  card.appendChild(grid);
+
+  const dc = J['死法卡'];
+  if (dc && dc.choice !== '未命中') {
+    const s = el('div', 'stamp'); s.appendChild(el('b', '', '你的打算踩中了 · ' + dc.choice)); s.appendChild(el('p', '', DEATH[dc.choice] || '')); card.appendChild(s);
+  }
+  if (V['假设'] && V['假设'].length) {
+    card.appendChild(el('h3', '', '假设'));
+    const ul = el('ul', 'plain'); V['假设'].forEach(x => ul.appendChild(el('li', '', x))); card.appendChild(ul);
+  }
+  if (V['验'] && V['验'].length) {
+    card.appendChild(el('h3', '', '打脸预测'));
+    const ul = el('ul', 'plain'); V['验'].forEach(x => ul.appendChild(el('li', '', x))); card.appendChild(ul);
+  }
+  const foot = el('div', 'foot');
+  if (V['价']) { const p = el('span'); p.appendChild(el('b', '', '价 ')); p.appendChild(document.createTextNode(V['价'])); foot.appendChild(p); }
+  if (V['锚']) { const p = el('span'); p.appendChild(el('b', '', '锚 ')); p.appendChild(document.createTextNode(V['锚'])); foot.appendChild(p); }
+  card.appendChild(foot);
+  out.appendChild(card);
+}
+
+async function go() {
+  const text = $('#q').value.trim(); $('#err').textContent = '';
+  if (text.length < 8) { $('#err').textContent = '把局说清楚一点：对手是谁、你要什么、能付多少。'; return; }
+  $('#go').disabled = true;
+  $('#out').innerHTML = '<div class="loading">四帝会审中<i>·</i><i>·</i><i>·</i></div>';
+  try {
+    const r = await fetch('api/judge', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
+    const d = await r.json();
+    if (!r.ok) { $('#err').textContent = d.error || '出错了'; $('#out').innerHTML = ''; if (r.status === 429) loadDemo(); return; }
+    render(d); $('#out').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (e) { $('#err').textContent = '网络断了，稍后再试。'; $('#out').innerHTML = ''; }
+  finally { $('#go').disabled = false; }
+}
+$('#go').onclick = go;
+
+async function loadDemo() {
+  try { const r = await fetch('api/demo'); if (r.ok) return render(await r.json()); } catch (e) {}
+  if (window.__DEMO__) render(window.__DEMO__);
+}
+loadDemo();
+</script>
+</body>
+</html>
