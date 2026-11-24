@@ -28,7 +28,7 @@
 # 1. 传到服务器后
 cd /srv/zhenzhidaole && npm install --omit=dev
 
-# 2. 用命理鉴心现有的 DeepSeek key 和模型名
+# 2. 配置 DeepSeek key 和模型名
 export DEEPSEEK_API_KEY=sk-xxxx
 export DEEPSEEK_MODEL=deepseek-chat      # 和现有项目里写的模型名保持一致
 PORT=3100 pm2 start server.js --name zhenzhidaole --update-env && pm2 save

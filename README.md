@@ -136,4 +136,4 @@ npm test
 
 ## 作者
 
-麻嘉诺（2028 届 · 上海杉达学院）· 该项目与 [命理鉴心](https://minglijinxin.com)、[MingLi-Bench](https://github.com/huangmao-gif/mingli-bench) 同属一个个人 AI 工程实践体系。
+麻嘉诺（2028 届 · 上海杉达学院）· 相关项目：[MingLi-Bench](https://github.com/huangmao-gif/mingli-bench)、[葵雪量化](https://github.com/huangmao-gif/kuixue-quant)。
